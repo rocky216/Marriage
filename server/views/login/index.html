@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <input id="mobile" type="text" name="mobile" value="">
+    <input id="password" type="text" name="password" value="">
+    <input id="submitHandle" type="button" name="" value="提交">
+
+    <div class="">
+      <input id="getInfo" type="button" name="" value="请求数据">
+    </div>
+    <script type="text/javascript">
+      $(function(){
+        var token=""
+        $("#getInfo").click(function(){
+          $.ajax({
+            url: "/getInfo",
+            type: "post",
+            data: {
+              token: token
+            },
+            success: function(data){
+              console.log(data);
+            }
+          })
+        })
+
+        $("#submitHandle").click(function(){
+          var mobile = $("#mobile").val()
+          var password = $("#password").val()
+          $.ajax({
+            url: "/login",
+            type: "post",
+            data: {
+              mobile: mobile,
+              password: password
+            },
+            success: function(data){
+              token = data.res
+            }
+          })
+        })
+
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+export const HOME_ACTION_LOADER = 'HOME_ACTION_LOADER'

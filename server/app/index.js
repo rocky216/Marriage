@@ -1,7 +1,8 @@
 var TestController = require("./controller/TestController")
-var HomeController = require("./controller/HomeController")
 
-module.exports = {
+import HomeController from "./controller/HomeController"
+
+export default {
   TestController: TestController,
   HomeController: HomeController
 }
