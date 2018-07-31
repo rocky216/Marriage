@@ -40,7 +40,7 @@ export function fetch(opt){
     return axios({
       url: setting.url,
       method: setting.method,
-      [setting.method == 'GET'?'params':'data']: qs.stringify(opt.data) ,
+      [setting.method == 'get'?'params':'data']: qs.stringify(opt.data),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       }

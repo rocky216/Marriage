@@ -1,7 +1,9 @@
-import {Operation} from "../../db/db"
+var path = require("path")
+import {Operation, add} from "../../db/db"
 import Password from "node-php-password"
 import {setToken, verifyToken} from "../../utils/auth"
 import areaData from "../areaData"
+
 
 
 
@@ -10,7 +12,24 @@ class HomeController {
 
   }
 
+  async addUser(req, res){
+    var body = req.body
+    var mobileSql = findById('sr_member', body.mobile)
+    Operation()
 
+    var sql = add('sr_member', req.body)
+    res.json({
+      sql:sql
+    })
+  }
+
+  async uploadImg(req, res, next){ //单图上传
+    var arr = req.file.originalname.split(".")
+    var type = arr[arr.length-1]
+    res.json({
+      path: `/Uploads/${req.file.filename}`
+    })
+  }
 
   async getAreaInfo(req, res){  //获取省市区三级联动
     var dataIntial={
@@ -21,10 +40,27 @@ class HomeController {
     var arr=[]
 
     _.each(areaData.provinces, (item, index)=>{
-      arr.push({
+      var obj1 = {
         value: index,
-        label: item.name
+        label: item.name,
+        children:[]
+      }
+      _.each(item.citys, (elem, i)=>{
+        var obj2 = {
+          value: i,
+          label: elem.name,
+          children: []
+        }
+        _.each(elem.countys, (citem, cindex)=>{
+          var obj3 = {
+            value: cindex,
+            label: citem.name
+          }
+          obj2.children.push(obj3)
+        })
+        obj1.children.push(obj2)
       })
+      arr.push(obj1)
     })
     dataIntial.res = arr
     res.json(dataIntial)

@@ -6,7 +6,6 @@ var pool = mysql.createPool(dbconfig.connection);
 
 export function Operation(sql){
   return new Promise((resolve, reject)=>{
-
     pool.getConnection((err,connection)=>{
       if (err) {
         console.log('与MySQL数据库建立连接失败！');
@@ -28,5 +27,30 @@ export function Operation(sql){
   })
 
 }
+
+export function findById(table, id, field='*'){
+  return `select ${field} from ${table} where id= ${id}`
+}
+
+export function add(table, json){
+  var arr1=[], arr2=[]
+
+  _.each(json, (item, attr)=>{
+    arr1.push(attr)
+    arr2.push("'"+item+"'")
+  })
+  let sql = `insert into ${table} (${arr1.join()}) values (${arr2.join()})`
+  return sql
+}
+//
+//
+// export function update(table, array, array, id){
+//
+// }
+//
+//
+// export function deleteById(table, id){
+//
+// }
 
 export default pool

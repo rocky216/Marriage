@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+import Password from "node-php-password"
 import qs from "qs"
 
 export const dataIntial = {
@@ -7,7 +8,15 @@ export const dataIntial = {
   res: null
 }
 
-export function auth(req, res, next){
+export function createPassword(pwd){  //生成hash密码
+  return Password.hash(pwd, "PASSWORD_BCRYPT", {cost: 12})
+}
+
+export function verifyPassword(pwd, hash){ //判断hash密码
+  return Password.verify("password123", hash)
+}
+
+export function auth(req, res, next){  //token 是否合格
   var token = req.session.token
 
   if (!verifyToken(req.body.token)) {

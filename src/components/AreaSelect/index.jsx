@@ -2,7 +2,7 @@ import React from "react"
 import {connect} from "react-redux"
 import {bindActionCreators} from "redux"
 import {Cascader } from "antd"
-import {getAreaInfo} from "action/userAction"
+import {getAreaInfo} from "actions/userAction"
 
 
 class AreaSelect extends React.Component {
@@ -10,13 +10,12 @@ class AreaSelect extends React.Component {
     super(props)
   }
   componentDidMount(){
-
+    this.props.actions.getAreaInfo()
   }
   render(){
+    const {areaList, changeHandle} = this.props
     return (
-      <div>
-
-      </div>
+      <Cascader options={areaList} onChange={changeHandle} placeholder="请选择地区"/>
     )
   }
 }
@@ -29,7 +28,7 @@ function mapDispatchToProps(dispatch){
 
 function mapStateToProps(state){
   return {
-
+    areaList: state.users.areaList
   }
 }
 

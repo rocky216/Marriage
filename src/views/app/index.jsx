@@ -12,7 +12,7 @@ class App extends React.Component {
     super(props)
   }
   componentDidMount(){
-    
+
   }
   render(){
     return (
@@ -23,7 +23,7 @@ class App extends React.Component {
             <Header style={{ background: '#fff', padding: 0 }} />
             <Content style={{minHeight: "780px"}}>
               {this.props.children}
-            </Content >
+            </Content>
           </Layout>
         </Layout>
       </div>
