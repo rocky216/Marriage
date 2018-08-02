@@ -11,6 +11,7 @@ var bodyparser = require("body-parser")
 var flash = require('connect-flash');
 import _ from "lodash"
 
+require("./db/model")
 global._ = _;
 
 var app = express()

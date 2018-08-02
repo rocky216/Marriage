@@ -1,7 +1,8 @@
 import React from "react"
 import {connect} from "react-redux"
 import {bindActionCreators} from "redux"
-import {Card, Form, Select, Row, Col, InputNumber, Input, Upload} from "antd"
+import {Card, Form, Select, Row, Col, InputNumber, Input, Upload, Button, Icon} from "antd"
+import {getEduSal} from "actions/userAction"
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -21,15 +22,39 @@ const formItemLayout = {
 class UserDetail extends React.Component {
   constructor(props) {
     super(props)
-    this.state={}
+    this.state={
+      imgsUrl: ''
+    }
+  }
+  componentDidMount(){
+    this.props.actions.getEduSal()
+  }
+  handleSubmit(e){
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log(values);
+      }
+    });
+  }
+  changeImg(event){
+    console.log(event);
+    var arr = []
+    if (event.file.status=="done") {
+      _.each(event.fileList, (item)=>{
+        arr.push(item.response.path)
+      })
+    }
+    this.setState({imgsUrl: arr.join()})
   }
   render(){
     const {getFieldDecorator} = this.props.form
+    const {education, salary} = this.props
 
     return (
       <div className="mgt10">
         <Card title="详情信息" >
-          <Form>
+          <Form onSubmit={this.handleSubmit.bind(this)}>
             <Row gutter={24} >
               <Col span={24} >
                 <FormItem label="积分" {...formItemLayout}>
@@ -41,7 +66,11 @@ class UserDetail extends React.Component {
               <Col span={24} >
                 <FormItem label="学历" {...formItemLayout}>
                   {getFieldDecorator("education")(
-                    <Input />
+                    <Select>
+                      {education?education.map(item=>(
+                        <Option key={item.value} value={item.value}>{item.label}</Option>
+                      )):''}
+                    </Select>
                   )}
                 </FormItem>
               </Col>
@@ -49,7 +78,9 @@ class UserDetail extends React.Component {
                 <FormItem label="月薪" {...formItemLayout}>
                   {getFieldDecorator("salary")(
                     <Select>
-                      <Option value="1">1000~2000</Option>
+                      {salary?salary.map(item=>(
+                        <Option key={item.value} value={item.value}>{item.label}</Option>
+                      )):''}
                     </Select>
                   )}
                 </FormItem>
@@ -71,8 +102,22 @@ class UserDetail extends React.Component {
               <Col span={24} >
                 <FormItem label="上传图片" {...formItemLayout}>
                   {getFieldDecorator("imgs")(
-                    <Upload />
+                    <Upload
+                      action="/uploadImg"
+                      name="avatar"
+                      multiple={true}
+                      listType="picture"
+                      onChange={this.changeImg.bind(this)}
+                    >
+                    <Button>多图上传</Button>
+                  </Upload>
                   )}
+                </FormItem>
+              </Col>
+              <Col span={24} >
+                <FormItem {...formItemLayout}>
+                  <Button className="mgr10"  ><Icon type="close"/>取消</Button>
+                  <Button type="primary" htmlType="submit" ><Icon type="save"/>保存</Button>
                 </FormItem>
               </Col>
             </Row>
@@ -85,13 +130,14 @@ class UserDetail extends React.Component {
 
 function mapDispatchToProps(dispatch){
   return {
-    actions: bindActionCreators({}, dispatch)
+    actions: bindActionCreators({getEduSal}, dispatch)
   }
 }
 
 function mapStateToProps(state){
   return {
-
+    education: state.users.education,
+    salary: state.users.salary
   }
 }
 

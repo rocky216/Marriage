@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken"
 import Password from "node-php-password"
 import qs from "qs"
+import {isPush} from "./index"
+
+
 
 export const dataIntial = {
   status: -1,
@@ -13,16 +16,31 @@ export function createPassword(pwd){  //生成hash密码
 }
 
 export function verifyPassword(pwd, hash){ //判断hash密码
-  return Password.verify("password123", hash)
+  return Password.verify(pwd, hash)
 }
 
-export function auth(req, res, next){  //token 是否合格
-  var token = req.session.token
+export async function auth(req, res, next){  //token 是否合格
 
-  if (!verifyToken(req.body.token)) {
+  const dataIntial = {
+    status: -1,
+    msg: "token参数错误！",
+    res: null
+  }
+  const {token} = req.body
+
+  try {
+    var isVerify = await verifyToken(token)
+    var id = isVerify.id
+    try {
+      var ispush = await isPush(id, token)
+      next()
+    } catch (e) {
+      dataIntial.msg = "你的账号在别处登录！"
+      dataIntial.status = -1
+      res.json(dataIntial)
+    }
+  } catch (e) {
     res.json(dataIntial)
-  }else {
-    next()
   }
 }
 
@@ -36,6 +54,7 @@ export function setToken(userInfo){
 }
 
 export function verifyToken(token){
+  token = token?token:""
   return new Promise((resolve, reject)=>{
     jwt.verify(token, process.env.CERT_KEY, (err, decoded)=>{
       err?reject(err):resolve(decoded)
