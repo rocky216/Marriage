@@ -3,6 +3,7 @@ import {connect} from "react-redux"
 import {bindActionCreators} from "redux"
 import {Card, Form, Select, Row, Col, InputNumber, Input, Upload, Button, Icon} from "antd"
 import {getEduSal} from "actions/userAction"
+import {addUser} from "actions/userAction"
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -30,7 +31,9 @@ class UserDetail extends React.Component {
     this.props.actions.getEduSal()
   }
   handleSubmit(e){
-    e.preventDefault();
+    this.props.prevform.validateFieldsAndScroll((err, values)=>{
+      console.log(values);
+    })
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log(values);
@@ -54,7 +57,7 @@ class UserDetail extends React.Component {
     return (
       <div className="mgt10">
         <Card title="详情信息" >
-          <Form onSubmit={this.handleSubmit.bind(this)}>
+          <Form >
             <Row gutter={24} >
               <Col span={24} >
                 <FormItem label="积分" {...formItemLayout}>
@@ -116,8 +119,8 @@ class UserDetail extends React.Component {
               </Col>
               <Col span={24} >
                 <FormItem {...formItemLayout}>
-                  <Button className="mgr10"  ><Icon type="close"/>取消</Button>
-                  <Button type="primary" htmlType="submit" ><Icon type="save"/>保存</Button>
+                  <Button className="mgr10" onClick={()=>browserHistory.push("/user")} ><Icon type="close"/>取消</Button>
+                  <Button type="primary" onClick={this.handleSubmit.bind(this)} ><Icon type="save"/>保存</Button>
                 </FormItem>
               </Col>
             </Row>
@@ -130,7 +133,7 @@ class UserDetail extends React.Component {
 
 function mapDispatchToProps(dispatch){
   return {
-    actions: bindActionCreators({getEduSal}, dispatch)
+    actions: bindActionCreators({getEduSal, addUser}, dispatch)
   }
 }
 

@@ -79,7 +79,7 @@ class AddUser extends React.Component {
     return (
       <Jcard>
         <Card title="基本信息">
-          <Form onSubmit={this.handleSubmit.bind(this)} >
+          <Form  >
             <Row gutter={24}>
               <Col span={8}>
                 <FormItem label="姓名" {...formItemLayout}>
@@ -186,14 +186,10 @@ class AddUser extends React.Component {
                   </Upload>
                 </FormItem>
               </Col>
-              <Col span={24}>
-                <Button className="mgr10" onClick={()=>browserHistory.push("/user")}><Icon type="close" />取消</Button>
-                <Button type="primary" htmlType="submit" ><Icon type="save" />保存</Button>
-              </Col>
             </Row>
           </Form>
         </Card>
-        <UserDetail/>
+        <UserDetail prevform={this.props.form} imageUrl={imageUrl} ereaIds={ereaIds} />
       </Jcard>
     )
   }
