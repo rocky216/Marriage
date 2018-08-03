@@ -2,9 +2,9 @@ import React from "react"
 import {connect} from "react-redux"
 import {bindActionCreators} from "redux"
 import {Link} from "react-router"
-import {Table, Button, Icon, Row, Col} from "antd"
+import {Table, Button, Icon, Row, Col, Popconfirm} from "antd"
 import Jcard from "components/Jcard"
-import {getUserList} from "actions/userAction"
+import {getUserList, deleteUser} from "actions/userAction"
 import columns from "./table-columns"
 import {addIndex} from "utils"
 
@@ -14,6 +14,27 @@ class User extends React.Component {
   }
   componentDidMount(){
     this.props.actions.getUserList()
+  }
+  deleteUser(item){
+    this.props.actions.deleteUser({id: item.id})
+    this.props.actions.getUserList()
+  }
+  getCol(){
+    var _this = this
+    return columns.concat([{
+      title: "操作",
+      render(text, item){
+        return (
+          <div>
+            <Link>详情</Link>
+            <Link className="mgl10" >编辑</Link>
+            <Popconfirm  placement="topRight" title="确认删除？" onConfirm={_this.deleteUser.bind(_this, item)} >
+              <a className="mgl10" href="javascript:;">删除</a>
+            </Popconfirm>
+          </div>
+        )
+      }
+    }])
   }
   render(){
     const {spinning, userList} = this.props
@@ -26,7 +47,7 @@ class User extends React.Component {
         </Row>
 
         <Table
-          columns={columns}
+          columns={this.getCol()}
           dataSource={addIndex(userList)}
         />
       </Jcard>
@@ -36,7 +57,7 @@ class User extends React.Component {
 
 function mapDispatchToProps(dispatch){
   return {
-    actions: bindActionCreators({getUserList}, dispatch)
+    actions: bindActionCreators({getUserList, deleteUser}, dispatch)
   }
 }
 

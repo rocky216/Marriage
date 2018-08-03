@@ -1,6 +1,6 @@
 var path = require("path")
 import {Operation, add} from "../../db/db"
-import {Member} from "../../db/model"
+import {Member, MemberInfo} from "../../db/model"
 import Password from "node-php-password"
 import {setToken, verifyToken, createPassword, verifyPassword} from "../../utils/auth"
 import areaData from "../areaData"
@@ -10,6 +10,60 @@ import {salary, education} from "../dataBase"
 
 class HomeController {
   constructor() {
+
+  }
+
+  async deleteUser(req, res){
+    var dataIntial={
+      status: 1,
+      msg: "请求成功",
+      res: null
+    }
+    var {id} = req.body
+    try {
+      var member = Member.update({
+        is_del: 1
+      },{where: {id}})
+      console.log(member, 666);
+      res.json(dataIntial)
+    } catch (e) {
+      dataIntial.status = 0
+      dataIntial.msg = "请求失败！"
+      res.json(dataIntial)
+    }
+
+  }
+
+  async getAdmin(req, res){
+    var {token} = req.body
+
+    var dataIntial={
+      status: 1,
+      msg: "请求成功",
+      res: null
+    }
+
+    try {
+      var dataId = await verifyToken(token)
+
+      try {
+        var  data = await Member.findOne( {
+          where: {id: dataId.id},
+          attributes: ["username"]
+        })
+        dataIntial.res = data
+        res.json(dataIntial)
+      } catch (e) {
+        dataIntial.status = 0,
+        dataIntial.msg = "请求失败！"
+        res.json(dataIntial)
+      }
+
+    } catch (e) {
+      dataIntial.status = 0
+      dataIntial.msg = "token参数错误!"
+      res.json(dataIntial)
+    }
 
   }
 
@@ -29,7 +83,11 @@ class HomeController {
       msg: "请求成功",
       res: null
     }
-    var {age, area, birthday, city, headimg, mobile, nickname, province, sex, username, password} = req.body
+    var {
+      age, area, birthday, city, headimg, mobile, nickname, province, sex, username, password,
+      description, address, integral, imgs, education, salary
+    } = req.body
+
     if (!verfiyMobile(mobile)) {
       dataIntial.status = 0
       dataIntial.msg = "手机号码格式不正确！"
@@ -41,10 +99,27 @@ class HomeController {
 
     if (!isExist) {
       password = password?createPassword(password):createPassword('123456')
-      var data = await Member.create({
-        age, area, birthday, city, headimg, mobile, nickname, province, sex, username, password
-      })
-      res.json(dataIntial)
+      try {
+        var memberData = await Member.create({
+          age, area, birthday, city, headimg, mobile, nickname, province, sex, username, password
+        })
+        var member_id = memberData.id
+        try {
+          var memberInfo = MemberInfo.create({
+           member_id, description, address, integral, imgs, education, salary
+          })
+          dataIntial.res = memberInfo
+          res.json(dataIntial)
+        } catch (e) {
+          dataIntial.status = 0
+          dataIntial.msg = "请求失败！",
+          res.json(dataIntial)
+        }
+      } catch (e) {
+        dataIntial.status = 0
+        dataIntial.msg = "请求失败！",
+        res.json(dataIntial)
+      }
     }else {
       dataIntial.status = 0
       dataIntial.msg = "手机号已存在！",
@@ -101,7 +176,9 @@ class HomeController {
       msg: "请求成功",
       res: null
     }
-    var data = await Operation(`select * from sr_member`)
+    var data = await Member.findAll({
+      where: {is_del: 0}
+    })
     if (data) {
       dataIntial.res = data
     }

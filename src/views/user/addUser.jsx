@@ -68,7 +68,7 @@ class AddUser extends React.Component {
   }
   render(){
     const {getFieldDecorator} = this.props.form
-    const {imageUrl} = this.state
+    const {imageUrl, ereaIds} = this.state
 
     const uploadButton = (
       <div>

@@ -1,4 +1,5 @@
 import React from "react"
+import moment from "moment"
 
 export default [
   {
@@ -13,6 +14,12 @@ export default [
     dataIndex: "sex",
     render(text){
       return <span>{parseInt(text)?"男":"女"}</span>
+    }
+  },{
+    title: "生日",
+    dataIndex: "birthday",
+    render(text){
+      return <span>{moment(text).format("YYYY-MM-DD")}</span>
     }
   }
 ]

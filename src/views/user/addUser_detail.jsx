@@ -1,9 +1,11 @@
 import React from "react"
 import {connect} from "react-redux"
 import {bindActionCreators} from "redux"
+import {browserHistory } from "react-router"
 import {Card, Form, Select, Row, Col, InputNumber, Input, Upload, Button, Icon} from "antd"
 import {getEduSal} from "actions/userAction"
 import {addUser} from "actions/userAction"
+import moment from "moment"
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -24,31 +26,43 @@ class UserDetail extends React.Component {
   constructor(props) {
     super(props)
     this.state={
-      imgsUrl: ''
+      imgsUrls: ''
     }
   }
   componentDidMount(){
     this.props.actions.getEduSal()
   }
   handleSubmit(e){
+    const {imgsUrls} = this.state
     this.props.prevform.validateFieldsAndScroll((err, values)=>{
-      console.log(values);
+      this.props.form.validateFields((err2, detailvaue) => {
+        if (!err) {
+          const {imageUrl, ereaIds} = this.props
+          let newValues = _.assign({},values,{
+            headimg: imageUrl,
+            birthday: moment(values.birthday).format("YYYY-MM-DD"),
+            province: ereaIds?ereaIds[0]:'',
+            city: ereaIds?ereaIds[1]:'',
+            area: ereaIds?ereaIds[2]:''
+          },detailvaue, {
+            imgs: imgsUrls
+          })
+          this.props.actions.addUser(newValues)
+        }
+      });
     })
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log(values);
-      }
-    });
+
   }
   changeImg(event){
-    console.log(event);
-    var arr = []
     if (event.file.status=="done") {
+      var arr = []
       _.each(event.fileList, (item)=>{
-        arr.push(item.response.path)
+        if (item.response) {
+          arr.push(item.response.path)
+        }
       })
-    }
-    this.setState({imgsUrl: arr.join()})
+      this.setState({imgsUrls: arr.join()})
+    }  
   }
   render(){
     const {getFieldDecorator} = this.props.form

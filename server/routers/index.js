@@ -12,6 +12,8 @@ function setRouter(passport){
   router.post("/uploadImg", upload.single('avatar'), controller.HomeController.uploadImg)  //上传图片
   router.post("/addUser",auth, controller.HomeController.addUser)  //添加用户
   router.post("/getEduSal",auth, controller.HomeController.getEduSal)  //获取薪资/学历
+  router.post("/getAdmin",auth, controller.HomeController.getAdmin)
+  router.post("/deleteUser",auth, controller.HomeController.deleteUser) 
   return router
 }
 
