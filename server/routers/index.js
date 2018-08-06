@@ -13,7 +13,8 @@ function setRouter(passport){
   router.post("/addUser",auth, controller.HomeController.addUser)  //添加用户
   router.post("/getEduSal",auth, controller.HomeController.getEduSal)  //获取薪资/学历
   router.post("/getAdmin",auth, controller.HomeController.getAdmin)
-  router.post("/deleteUser",auth, controller.HomeController.deleteUser) 
+  router.post("/deleteUser",auth, controller.HomeController.deleteUser)
+  router.post("/getUserDetail",auth, controller.HomeController.getUserDetail) 
   return router
 }
 

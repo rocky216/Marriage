@@ -8,14 +8,25 @@ import {getAreaInfo} from "actions/userAction"
 class AreaSelect extends React.Component {
   constructor(props) {
     super(props)
+    this.state={
+      defaultArea: this.props.defaultArea
+    }
   }
   componentDidMount(){
     this.props.actions.getAreaInfo()
   }
   render(){
-    const {areaList, changeHandle} = this.props
+    const {areaList, changeHandle, defaultArea} = this.props
+
     return (
-      <Cascader options={areaList} onChange={changeHandle} placeholder="请选择地区"/>
+      <div>
+        {defaultArea?
+          <Cascader value={defaultArea} options={areaList} onChange={changeHandle} placeholder="请选择地区"/>
+          :
+          <Cascader options={areaList} onChange={changeHandle} placeholder="请选择地区"/>
+        }
+      </div>
+
     )
   }
 }

@@ -3,6 +3,29 @@ import {fetch} from "utils"
 export const USER_ACTION_LOADER = "USER_ACTION_LOADER"
 export const USER_ACTION_COMPLETE = "USER_ACTION_COMPLETE"
 
+export function getUserDetail(params){
+  return async function(dispatch, getState){
+    dispatch({type: USER_ACTION_LOADER})
+    const options = {
+      url: "/getUserDetail",
+      method: "post",
+      data: params
+    }
+    try {
+      let data = await fetch(options)
+      dispatch({
+        type: USER_ACTION_COMPLETE,
+        userDetail: data.detail,
+        userBase: data.base
+      })
+    } catch (e) {
+      console.log(e);
+      dispatch({
+        type: USER_ACTION_COMPLETE
+      })
+    }
+  }
+}
 
 export function deleteUser(params){
   return async function(dispatch, getState){

@@ -13,6 +13,31 @@ class HomeController {
 
   }
 
+  async getUserDetail(req, res){
+    var dataIntial={
+      status: 1,
+      msg: "请求成功",
+      res: null
+    }
+    var {id} = req.body
+    try {
+      var base = await Member.findOne({where: {id}})
+      var member_id = base.id
+      try {
+        var detail = await MemberInfo.findOne({where: {member_id: member_id}})
+        dataIntial.res = {base, detail}
+        res.json(dataIntial)
+      } catch (e) {
+        dataIntial.res = {base, detail: ''}
+        res.json(dataIntial)
+      }
+    } catch (e) {
+      dataIntial.msg = "请求失败！"
+      dataIntial.status = 0
+      res.json(dataIntial)
+    }
+  }
+
   async deleteUser(req, res){
     var dataIntial={
       status: 1,

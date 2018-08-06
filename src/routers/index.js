@@ -5,6 +5,8 @@ import Home from "views/home"
 import User from "views/user"
 import AddUser from "views/user/addUser"
 import Login from "views/login"
+import UserDetail from "views/user/userDetail"
+import EditUser from "views/user/editUser"
 
 export default ()=>(
   <Route>
@@ -13,6 +15,8 @@ export default ()=>(
       <Route path="/home" component={Home}/>
       <Route path="/user" component={User} />
       <Route path="/addUser" component={AddUser} />
+      <Route path="/editUser/:id" component={EditUser} />
+      <Route path="/userdetail/:id" component={UserDetail} />
     </Route>
     <Route path="/login" component={Login} />
   </Route>

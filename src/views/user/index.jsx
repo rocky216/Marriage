@@ -26,8 +26,8 @@ class User extends React.Component {
       render(text, item){
         return (
           <div>
-            <Link>详情</Link>
-            <Link className="mgl10" >编辑</Link>
+            <Link to={`/userdetail/${item.id}`}>详情</Link>
+            <Link to={`/editUser/${item.id}`} className="mgl10" >编辑</Link>
             <Popconfirm  placement="topRight" title="确认删除？" onConfirm={_this.deleteUser.bind(_this, item)} >
               <a className="mgl10" href="javascript:;">删除</a>
             </Popconfirm>
