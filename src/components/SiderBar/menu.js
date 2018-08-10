@@ -8,9 +8,9 @@ export default [
       key: "101",
       link: '/user'
     },{
-      title: "寻更",
+      title: "banner设置",
       key: "102",
-      link: ''
+      link: '/addbanner'
     }]
   }
 ]

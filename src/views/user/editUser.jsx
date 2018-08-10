@@ -6,6 +6,7 @@ import {Card, Form, Row, Col, Button, Select, Input, InputNumber, DatePicker, Up
 import {getUserDetail} from "actions/userAction"
 import AreaSelect from "components/AreaSelect"
 import moment from "moment"
+import EditUserDetail from "./editUser_detail"
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -26,34 +27,52 @@ class EditUser extends React.Component {
     super(props)
     this.state={
       area: [],
-      imageUrl: '',
-      fileList: []
+      imageUrl: ''
     }
   }
   componentDidMount(){
     this.props.actions.getUserDetail({id: this.props.params.id})
   }
+  componentWillUnmount(){
+    this.setState({imageUrl: ''})
+  }
   componentWillReceiveProps(nextProps){
     const {userBase} = nextProps
 
     let area = userBase && userBase.province?[userBase.province.toString(), userBase.city.toString(),
-        userBase.area.toString()]:[]
-        this.setState({area,
-          fileList: [{
-                uid: '-1',
-                name: 'xxx.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-              }]
-        })
+        userBase.area.toString()]:[];
+    this.setState({area})
+
+    if(userBase && userBase.headimg){
+      
+      if (!this.state.imageUrl && this.state.imageUrl.url != userBase.headimg) {
+        this.setState({imageUrl: [{
+          uid: -1,
+          status: "done",
+          url: userBase.headimg,
+          thumbUrl: userBase.headimg
+        }]})
+      }
+    }
 
   }
   getAreaChange(value){
     this.setState({area: value})
   }
-  changeImg(){
+  normFile(e){
+    if (Array.isArray(e)) {
+      return e;
+    }
+    if (e.fileList[e.fileList.length-1]["response"]) {
+      this.setState({imageUrl:[{
+        uid: -2,
+        status: "done",
+        url: e.fileList[e.fileList.length-1]["response"]["path"],
+        thumbUrl: e.fileList[e.fileList.length-1]["response"]["path"]
+      }]})
+    }
 
+    return e && [e.fileList[e.fileList.length-1]];
   }
   render(){
     const {getFieldDecorator } = this.props.form
@@ -61,26 +80,12 @@ class EditUser extends React.Component {
     const {area , imageUrl} = this.state
     let birthday = userBase && userBase.birthday?moment(userBase.birthday).format("YYYY-MM-DD"):''
 
-    const uploadButton = (
-      <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
-      </div>
-    )
-    const fileList = [{
-      uid: '-1',
-      name: 'xxx.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    }];
     const props = {
        action: '/uploadImg',
        name: "avatar",
-       listType: 'picture',
-       defaultFileList: [...fileList],
-       onChange: this.changeImg.bind(this)
+       listType:"picture",
     }
-    console.log(fileList, 66);
+
     return (
       <Jcard spinning={spending} >
         <Card title="基本信息">
@@ -183,16 +188,22 @@ class EditUser extends React.Component {
             </Col>
             <Col span={8}>
               <FormItem label="上传头像" {...formItemLayout}>
-                <Upload
-                    style={{ width: "128px", height: "128px"}}
-                    {...props}
-                  >
-                  {uploadButton}
-                </Upload>
+                {getFieldDecorator("headimg", {
+                  initialValue: imageUrl,
+                  valuePropName: "fileList",
+                  getValueFromEvent: this.normFile.bind(this),
+                })(
+                  <Upload
+                      {...props}
+                    >
+                    <Button>上传头像</Button>
+                  </Upload>
+                )}
               </FormItem>
             </Col>
           </Row>
         </Card>
+        <EditUserDetail id={this.props.params.id} prevform={this.props.form} imageUrl={imageUrl} />
       </Jcard>
     )
   }

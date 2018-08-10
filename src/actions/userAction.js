@@ -3,6 +3,29 @@ import {fetch} from "utils"
 export const USER_ACTION_LOADER = "USER_ACTION_LOADER"
 export const USER_ACTION_COMPLETE = "USER_ACTION_COMPLETE"
 
+export function editUser(params, next){
+  return async function(dispatch, getState){
+    dispatch({type: USER_ACTION_LOADER})
+    const options = {
+      url: "/editUser",
+      method: "post",
+      data: params
+    }
+    try {
+      let data = await fetch(options)
+      dispatch({
+        type: USER_ACTION_COMPLETE
+      })
+      next()
+    } catch (e) {
+      console.log(e);
+      dispatch({
+        type: USER_ACTION_COMPLETE
+      })
+    }
+  }
+}
+
 export function getUserDetail(params){
   return async function(dispatch, getState){
     dispatch({type: USER_ACTION_LOADER})
@@ -92,7 +115,7 @@ export function login(payload, next){
   }
 }
 
-export function addUser(payload){
+export function addUser(payload, next){
   return async function(dispatch, getState){
     dispatch({type: USER_ACTION_LOADER})
     const options = {
@@ -100,11 +123,19 @@ export function addUser(payload){
       method: "post",
       data:payload
     }
-    let data = await fetch(options)
-    dispatch({
-      type: USER_ACTION_COMPLETE,
-      userList: data
-    })
+    try {
+      let data = await fetch(options)
+      dispatch({
+        type: USER_ACTION_COMPLETE
+      })
+      next()
+    } catch (e) {
+      console.log(e);
+      dispatch({
+        type: USER_ACTION_LOADER
+      })
+    }
+
   }
 }
 

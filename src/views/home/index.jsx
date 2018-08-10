@@ -1,7 +1,7 @@
 import React from "react"
 import {connect} from "react-redux"
 import {bindActionCreators} from "redux"
-import {getAdmin} from "actions/homeAction"
+import {getAdmin, getSmallLogin} from "actions/homeAction"
 
 
 class Home extends React.Component {
@@ -9,7 +9,7 @@ class Home extends React.Component {
     super(props)
   }
   componentDidMount(){
-    
+    this.props.actions.getSmallLogin()
   }
   render(){
     return (
@@ -20,7 +20,7 @@ class Home extends React.Component {
 
 function mapDispatchToProps(dispatch){
   return {
-    actions: bindActionCreators({getAdmin}, dispatch)
+    actions: bindActionCreators({getAdmin, getSmallLogin}, dispatch)
   }
 }
 

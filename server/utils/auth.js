@@ -49,7 +49,7 @@ export function setToken(userInfo){
   return jwt.sign(
     userInfo,
     process.env.CERT_KEY,
-    {expiresIn: '2h'}
+    {expiresIn: '10h'}
   )
 }
 

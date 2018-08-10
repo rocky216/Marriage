@@ -1,6 +1,7 @@
 var path = require("path")
+var http = require('http')
 import {Operation, add} from "../../db/db"
-import {Member, MemberInfo} from "../../db/model"
+import {Member, MemberInfo, Banner} from "../../db/model"
 import Password from "node-php-password"
 import {setToken, verifyToken, createPassword, verifyPassword} from "../../utils/auth"
 import areaData from "../areaData"
@@ -10,6 +11,102 @@ import {salary, education} from "../dataBase"
 
 class HomeController {
   constructor() {
+    this.name="name"
+  }
+
+
+  async deleteBanner(req, res){
+    var dataIntial={
+      status: 1,
+      msg: "请求成功",
+      res: null
+    }
+    let {id} = req.body
+    try {
+      let data = await Banner.destroy({where: {id}})
+      console.log(id, 999);
+      dataIntial.res = data
+      res.json(dataIntial)
+    } catch (e) {
+      dataIntial.status = 0
+      dataIntial.msg = "请求失败！"
+      res.json(dataIntial)
+    }
+  }
+
+  async getBannerList(req, res){
+    var dataIntial={
+      status: 1,
+      msg: "请求成功",
+      res: null
+    }
+    try {
+      let data = await Banner.findAll({where: {is_marriage: 1}})
+      dataIntial.res = data
+      res.json(dataIntial)
+    } catch (e) {
+      dataIntial.status = 0
+      dataIntial.msg = "请求失败！"
+      res.json(dataIntial)
+    }
+  }
+
+  async addBanner(req, res){
+    var dataIntial={
+      status: 1,
+      msg: "请求成功",
+      res: null
+    }
+    let {title, save_path, url} = req.body
+
+
+    try {
+      var data = await Banner.create({title, save_path, url, is_marriage: 1})
+      dataIntial.res = data
+      res.json(dataIntial)
+    } catch (e) {
+      dataIntial.status = 0
+      dataIntial.msg = "请求失败！"
+      res.json(dataIntial)
+    }
+  }
+
+  async editUser(req, res){
+    var dataIntial={
+      status: 1,
+      msg: "请求成功",
+      res: null
+    }
+    let {id,mobile, username, age, birthday, headimg,nickname, sex, signature, idcard,
+        address, description, education, integral, salary, imgs} = req.body
+        console.log(req.body);
+    try {
+      var base = await Member.update({
+        mobile, username, age, birthday, headimg,nickname, sex, signature, idcard,integral
+      },{
+        where: {id}
+      })
+      try {
+        var base = await MemberInfo.update({
+          address, description, education, integral, salary, imgs
+        },{
+          where: {member_id: id}
+        })
+        res.json(dataIntial)
+      } catch (e) {
+        console.log(2);
+        dataIntial.status=0
+        dataIntial.msg = "请求失败！"
+        res.json(dataIntial)
+      }
+    } catch (e) {
+      console.log(1);
+      dataIntial.status=0
+      dataIntial.msg = "请求失败！"
+      res.json(dataIntial)
+    }
+
+
 
   }
 
@@ -126,11 +223,11 @@ class HomeController {
       password = password?createPassword(password):createPassword('123456')
       try {
         var memberData = await Member.create({
-          age, area, birthday, city, headimg, mobile, nickname, province, sex, username, password
+          age, area, birthday, city, headimg, mobile, nickname, province, sex, username, password,is_marriage:1,integral
         })
         var member_id = memberData.id
         try {
-          var memberInfo = MemberInfo.create({
+          var memberInfo =await MemberInfo.create({
            member_id, description, address, integral, imgs, education, salary
           })
           dataIntial.res = memberInfo
@@ -156,7 +253,7 @@ class HomeController {
     var arr = req.file.originalname.split(".")
     var type = arr[arr.length-1]
     res.json({
-      path: `/Uploads/${req.file.filename}`
+      path: `${process.env.HOST}/Uploads/${req.file.filename}`
     })
   }
 

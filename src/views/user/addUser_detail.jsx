@@ -47,7 +47,9 @@ class UserDetail extends React.Component {
           },detailvaue, {
             imgs: imgsUrls
           })
-          this.props.actions.addUser(newValues)
+          this.props.actions.addUser(newValues, ()=>{
+            browserHistory.push("/user")
+          })
         }
       });
     })
@@ -62,7 +64,7 @@ class UserDetail extends React.Component {
         }
       })
       this.setState({imgsUrls: arr.join()})
-    }  
+    }
   }
   render(){
     const {getFieldDecorator} = this.props.form
