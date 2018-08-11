@@ -19,14 +19,14 @@ class SmallProContrller {
       token,
       username,sex,age,signature,
       education,salary,address,imgs
-    } = req.body
+    } = req.body 
     try {
       var user = await verifyToken(token)
 
       var base = await Member.update({username,sex,age,signature},{
         where: {id: user.id}
       })
-      
+
       var detail = await MemberInfo.update({education,salary,address,imgs},{
         where: {member_id: user.id}
       })
