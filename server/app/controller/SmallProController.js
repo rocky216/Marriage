@@ -9,6 +9,37 @@ class SmallProContrller {
 
   }
 
+  async updateAll(req, res){
+    var dataIntial={
+      status: 1,
+      msg: "请求成功",
+      res: null
+    }
+    let {
+      token,
+      username,sex,age,signature,
+      education,salary,address,imgs
+    } = req.body
+    try {
+      var user = await verifyToken(token)
+
+      var base = await Member.update({username,sex,age,signature},{
+        where: {id: user.id}
+      })
+      
+      var detail = await MemberInfo.update({education,salary,address,imgs},{
+        where: {member_id: user.id}
+      })
+
+      dataIntial.res = {token, base, detail, imgs}
+      res.json(dataIntial)
+    } catch (e) {
+      dataIntial.status = 0
+      dataIntial.msg = "请求失败！"
+      res.json(dataIntial)
+    }
+  }
+
   async getAllDetail(req, res){
     var dataIntial={
       status: 1,

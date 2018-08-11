@@ -31,6 +31,7 @@ function setRouter(passport){
   router.post("/Api/getIntegral", auth, controller.SmallProController.getIntegral)
   router.post("/Api/seeBeauty", auth, controller.SmallProController.seeBeauty)
   router.post("/Api/getAllDetail", auth, controller.SmallProController.getAllDetail)
+  router.post("/Api/updateAll", auth, controller.SmallProController.updateAll)
 
   return router
 }
