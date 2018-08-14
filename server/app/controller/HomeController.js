@@ -314,6 +314,10 @@ class HomeController {
       msg: "请求成功",
       res: null
     }
+    // dataIntial.res = createPassword('admin')
+    //
+    // res.json(dataIntial)
+    // return
     // var pwd = Password.hash("xb921214", "PASSWORD_BCRYPT", {cost: 12})
     let {username, password} = req.body
     let data = await Member.findOne({

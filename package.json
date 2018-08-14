@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec babel-node --harmony ./server/server.js"
+    "dev": "nodemon --exec babel-node --harmony ./server/server.js",
+    "build": "babel server -d build",
+    "product": "pm2 start ./build/server.js"
   },
   "repository": {
     "type": "git",

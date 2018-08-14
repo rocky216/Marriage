@@ -9,7 +9,7 @@ class Home extends React.Component {
     super(props)
   }
   componentDidMount(){
-    this.props.actions.getSmallLogin()
+    // this.props.actions.getSmallLogin()
   }
   render(){
     return (

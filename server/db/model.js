@@ -57,7 +57,7 @@ export let MemberInfo = sequelize.define('sr_member_info', {  //用户信息表
     address: Sequelize.STRING,
     integral: Sequelize.BIGINT(11),
     imgs: Sequelize.TEXT,
-    education: Sequelize.STRING,
+    education: Sequelize.BIGINT(11),
     salary:  Sequelize.BIGINT(11)
 }, {
     timestamps: false,
