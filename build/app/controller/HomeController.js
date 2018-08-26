@@ -700,7 +700,7 @@ var HomeController = function () {
                 };
                 _context12.next = 3;
                 return _model.Member.findAll({
-                  where: { is_del: 0 }
+                  where: { is_del: 0, is_marriage: 1 }
                 });
 
               case 3:
@@ -742,6 +742,10 @@ var HomeController = function () {
                   status: 1,
                   msg: "请求成功",
                   res: null
+                  // dataIntial.res = createPassword('admin')
+                  //
+                  // res.json(dataIntial)
+                  // return
                   // var pwd = Password.hash("xb921214", "PASSWORD_BCRYPT", {cost: 12})
                 };
                 _req$body4 = req.body, username = _req$body4.username, password = _req$body4.password;

@@ -299,7 +299,7 @@ class HomeController {
       res: null
     }
     var data = await Member.findAll({
-      where: {is_del: 0}
+      where: {is_del: 0, is_marriage: 1}
     })
     if (data) {
       dataIntial.res = data
